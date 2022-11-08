@@ -78,6 +78,8 @@ data <- read_tsv(args$input_fn, col_names=c("Ind", "Pop"), show_col_types = FALS
   pivot_longer(cols=everything(), names_to='filler', values_to="observed_haplotypes") %>%
   select(-filler)
 
-target_haplotype_counts = targets %>% purrr::pmap_dfr(~count_observed_haplotypes(data, ..1, ..2, ..3))
+target_haplotype_counts = targets %>% 
+  purrr::pmap_dfr(~count_observed_haplotypes(data, ..1, ..2, ..3)) %>%
+  pivot_wider(id_cols=everything(), names_from=target_haplotype, values_from=n)
 
 write_tsv(target_haplotype_counts, file = output_file)
